@@ -60,7 +60,7 @@ params.liftover = 'no'
 
 params.inclusion_step_output = 'NO_FILE'
 
-output_cs_pip = (params.output_cs_pip == "TRUE")
+output_cs_pips = (params.output_cs_pip == "TRUE")
 
 //Show parameter values
 log.info """=======================================================
