@@ -60,7 +60,7 @@ params.liftover = 'no'
 
 params.inclusion_step_output = 'NO_FILE'
 
-if (params.output_cs_pip == false){output_cs_pip = "FALSE"} else {output_cs_pip = "TRUE"}
+output_cs_pip = (params.output_cs_pip == "TRUE")
 
 //Show parameter values
 log.info """=======================================================
@@ -175,7 +175,7 @@ workflow {
     CIS_TRANS_COLOCALIZATION.out.cs.flatten()
         .collectFile(name: 'HyprColocResults.txt', keepHeader: true, sort: true, storeDir: "${params.OutputDir}")
 
-    if (output_cs_pips == "TRUE") {
+    if (output_cs_pips == true) {
         CIS_TRANS_COLOCALIZATION.out.pips.flatten()
             .collectFile(name: 'GwasColocSnpPipResults.txt', keepHeader: true, sort: true, storeDir: "${params.OutputDir}")
     }
