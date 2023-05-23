@@ -170,7 +170,7 @@ workflow {
     CIS_TRANS_COLOCALIZATION(
         results_grouped_ch,
         gene_correlations_ch, inclusion_step_output_ch,
-        posterior_threshold, cs_threshold, output_cs_pip)
+        posterior_threshold, cs_threshold, output_cs_pips)
 
     CIS_TRANS_COLOCALIZATION.out.cs.flatten()
         .collectFile(name: 'HyprColocResults.txt', keepHeader: true, sort: true, storeDir: "${params.OutputDir}")
