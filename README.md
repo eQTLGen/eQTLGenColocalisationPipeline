@@ -96,7 +96,7 @@ module load squashfs/4.4
 
 nextflow_path=[Full path to the folder where Nextflow is installed]
 
-${nextflow_path}/nextflow run RunHyprColocOnGWAS.nf \
+${nextflow_path}/nextflow run ColocalisationPipeline.nf \
 --gwas '[Path to GWAS summary statistics file]' \
 --window '[Window around lead SNP to search colocalization]' \
 --Pthresh '[P-value threshold for lead SNP]' \
