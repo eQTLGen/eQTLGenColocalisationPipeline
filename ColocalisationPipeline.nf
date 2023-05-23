@@ -99,12 +99,14 @@ empirical_ch = Channel.fromPath(params.empirical)
     .map { file ->
            def key = file.name.toString().tokenize('.').get(1)
            return tuple(key, file) }
+    .groupTuple()
 
 // Get permuted channel
 permuted_ch = Channel.fromPath(params.permuted)
     .map { file ->
            def key = file.name.toString().tokenize('.').get(1)
            return tuple(key, file) }
+    .groupTuple()
 
 // Get gene correlations channel
 gene_correlations_ch = Channel.fromPath(params.gene_correlations).collect()
@@ -153,19 +155,7 @@ cs_threshold = Channel.value(params.cs_threshold)
 //   Collect combinations of eQTL blood genes for which we should do colocalisations
 
 workflow {
-    empirical_grouped_ch = empirical_ch
-        .map { file ->
-               def key = file.name.toString().tokenize('.').get(1)
-               return tuple(key, file) }
-        .groupTuple()
-
-    permuted_grouped_ch = permuted_ch
-        .map { file ->
-               def key = file.name.toString().tokenize('.').get(1)
-               return tuple(key, file) }
-        .groupTuple()
-
-    results_grouped_ch = empirical_grouped_ch.join(permuted_grouped_ch).view()
+    results_grouped_ch = empirical_ch.join(permuted_ch).view()
 
     CIS_TRANS_COLOCALIZATION(
         results_grouped_ch,
