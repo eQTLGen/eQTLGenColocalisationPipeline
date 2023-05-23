@@ -165,10 +165,10 @@ workflow {
                return tuple(key, file) }
         .groupTuple()
 
-    results_grouped_ch = empirical_grouped_ch.join(permuted_grouped_ch)
+    results_grouped_ch = empirical_grouped_ch.join(permuted_grouped_ch).view()
 
     CIS_TRANS_COLOCALIZATION(
-        results_grouped_ch
+        results_grouped_ch,
         gene_correlations_ch, inclusion_step_output_ch,
         posterior_threshold, cs_threshold, output_cs_pip)
 
