@@ -157,13 +157,13 @@ workflow {
         .map { file ->
                def key = file.name.toString().tokenize('.').get(1)
                return tuple(key, file) }
-                        groupTuple()
+        .groupTuple()
 
     permuted_grouped_ch = permuted_ch
         .map { file ->
                def key = file.name.toString().tokenize('.').get(1)
                return tuple(key, file) }
-                        groupTuple()
+        .groupTuple()
 
     results_grouped_ch = empirical_grouped_ch.join(permuted_grouped_ch)
 
