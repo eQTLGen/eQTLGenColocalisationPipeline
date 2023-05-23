@@ -154,10 +154,10 @@ if(params.bed != 'none'){
 
 workflow {
     empirical_grouped_ch = empirical_ch
-`        .map { file ->
+        .map { file ->
                def key = file.name.toString().tokenize('.').get(1)
                return tuple(key, file) }
-                        groupTuple()`
+                        groupTuple()
 
     permuted_grouped_ch = permuted_ch
         .map { file ->
