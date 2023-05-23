@@ -45,7 +45,7 @@ process RunCisTransHyprColoc {
     --cs-threshold ${csThreshold} \
     --output-prefix "cis_trans_coloc.${locus_string}"
     """
-    if (outputCsPip == "FALSE")
+    if (outputCsPip == false)
       """
       touch cis_trans_coloc.${locus_string}.variant_pips.txt
       """
@@ -78,7 +78,7 @@ process RunHyprColoc {
     --cs-threshold ${csThreshold} \
     --output-prefix "cis_trans_coloc.${locus_string}"
     """
-    if (outputCsPip == "FALSE")
+    if (outputCsPip == false)
       """
       touch cis_trans_coloc.${locus_string}.variant_pips.txt
       """
