@@ -155,7 +155,7 @@ cs_threshold = Channel.value(params.cs_threshold)
 //   Collect combinations of eQTL blood genes for which we should do colocalisations
 
 workflow {
-    results_grouped_ch = empirical_ch.join(permuted_ch).view()
+    results_grouped_ch = empirical_ch.join(permuted_ch)
 
     CIS_TRANS_COLOCALIZATION(
         results_grouped_ch,
