@@ -104,7 +104,8 @@ workflow CIS_TRANS_COLOCALIZATION {
             results_grouped_ch, gene_correlations_ch, sample_overlap_ch, posterior_threshold, cs_threshold, output_cs_pip)
 
     emit:
-        hypr_coloc_results
+        cs = hypr_coloc_results.cs
+        pips = hypr_coloc_results.pips
 }
 
 
