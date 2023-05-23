@@ -50,9 +50,8 @@ __description__ = "{} is a program developed and maintained by {}. " \
 
 # Classes
 class SampleOverlapCalculator:
-    def __init__(self, inclusion_path, maf_table,
+    def __init__(self, inclusion_path,
                  table_name="filter_logs_full.log",
-                 variant_inclusion_format="%s_SnpsToInclude.txt",
                  gene_inclusion_format="%s_GenesToInclude.txt"):
 
         self.overview_df = pd.read_table(os.path.join(inclusion_path, table_name), index_col='Dataset')
@@ -117,11 +116,12 @@ def main(argv=None):
 
     # Process input
     parser = argparse.ArgumentParser(description='Annotate significant eQTL results with variant and gene information')
-
-
-
+    parser.add_argument('inclusion-path', dest='inclusion_path', help='The folder with inclusion files')
     args = parser.parse_args(argv[1:])
-    print(args)
+
+    sample_overlap_calculator = SampleOverlapCalculator(args.inclusion_path)
+
+    print(sample_overlap_calculator.calculate_sample_overlap())
 
     # Output
     return 0

@@ -13,7 +13,7 @@ process SampleOverlapMatrix {
 
     script:
         """
-        sample_overlap_table.py ${inclusionOutput}/filter_logs_full.log ${inclusionOutput}/filter_logs_full.log
+        sample_overlap_table.py ${inclusionOutput}/filter_logs_full.log
         """
 }
 
