@@ -120,13 +120,13 @@ posterior_threshold = Channel.value(params.posterior_threshold)
 cs_threshold = Channel.value(params.cs_threshold)
 
 // Here specify optionally file with the list of regions to include to the analysis
-if(params.bed != 'none'){
-  Channel.fromPath(params.bed)
-  .ifEmpty { error "Cannot find regions from file: ${params.bed}" }
-  .splitCsv(header: true, sep: '\t', strip: true)
-  .map{row -> [ row.regions ]}
-  .set { loci_ch }
-}
+// if(params.bed != 'none'){
+//   Channel.fromPath(params.bed)
+//   .ifEmpty { error "Cannot find regions from file: ${params.bed}" }
+//   .splitCsv(header: true, sep: '\t', strip: true)
+//   .map{row -> [ row.regions ]}
+//   .set { loci_ch }
+// }
 
 // Here specify the list of eQTL Catalogue ftp files to query
 // if(params.gwas == 'none'){
