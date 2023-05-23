@@ -6,7 +6,7 @@ process SampleOverlapMatrix {
     publishDir "${params.output}/sample_overlap", mode: 'copy', overwrite: true
 
     input:
-        path inclusionDir
+        path inclusionOutput
 
     output:
         path "sample_overlap_matrix.csv"
