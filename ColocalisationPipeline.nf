@@ -5,6 +5,10 @@
  */
 nextflow.enable.dsl = 2
 
+// import modules
+include { SampleOverlapMatrix; RunCisTransHyprColoc; RunHyprColoc; CIS_TRANS_COLOCALIZATION; GWAS_COLOCALIZATION } from './modules/HyprColocColocalisation.nf'
+
+
 def helpmessage() {
 
 log.info"""
@@ -91,13 +95,13 @@ log.info "======================================================="
 
 // Define argument channels
 // Get empirical channel
-empirical_ch = Channel.fromPath(params.empirical_results)
+empirical_ch = Channel.fromPath(params.empirical)
     .map { file ->
            def key = file.name.toString().tokenize('.').get(1)
            return tuple(key, file) }
 
 // Get permuted channel
-permuted_ch = Channel.fromPath(params.permuted_results)
+permuted_ch = Channel.fromPath(params.permuted)
     .map { file ->
            def key = file.name.toString().tokenize('.').get(1)
            return tuple(key, file) }
@@ -116,28 +120,28 @@ posterior_threshold = Channel.value(params.posterior_threshold)
 cs_threshold = Channel.value(params.cs_threshold)
 
 // Here specify optionally file with the list of regions to include to the analysis
-if(params.RegionList != 'none'){
-  Channel.fromPath(params.RegionList)
-  .ifEmpty { error "Cannot find regions from file: ${params.RegionList}" }
+if(params.bed != 'none'){
+  Channel.fromPath(params.bed)
+  .ifEmpty { error "Cannot find regions from file: ${params.bed}" }
   .splitCsv(header: true, sep: '\t', strip: true)
   .map{row -> [ row.regions ]}
-  .set { Regions }
+  .set { loci_ch }
 }
 
 // Here specify the list of eQTL Catalogue ftp files to query
-if(params.gwas == 'none'){
-  Channel.fromPath("$baseDir/bin/eQTLCatalogue_datasets.txt")
-  .ifEmpty { error "Cannot find regions from file: $baseDir/data/eQTLCatalogue_datasets.txt" }
-  .splitCsv(header: false, sep: '\t', strip: true)
-  .map{row -> tuple(row)}
-  .set { eqtl_files }
-} else {
-  Channel.fromPath(params.GwasFile)
-  .ifEmpty { error "Cannot find regions from file: ${params.eQtlFile}" }
-  .splitCsv(header: false, sep: '\t', strip: true)
-  .map{row -> tuple(row)}
-  .set { InpGwas }
-}
+// if(params.gwas == 'none'){
+//   Channel.fromPath("$baseDir/bin/eQTLCatalogue_datasets.txt")
+//   .ifEmpty { error "Cannot find regions from file: $baseDir/data/eQTLCatalogue_datasets.txt" }
+//   .splitCsv(header: false, sep: '\t', strip: true)
+//   .map{row -> tuple(row)}
+//   .set { eqtl_files }
+// } else {
+//   Channel.fromPath(params.gwas)
+//   .ifEmpty { error "Cannot find regions from file: ${params.gwas}" }
+//   .splitCsv(header: false, sep: '\t', strip: true)
+//   .map{row -> tuple(row)}
+//   .set { InpGwas }
+// }
 
 // Identify the eQTL blood genes for which we should do colocalisations
 // Prepare the eQTL blood genes for which we should do colocalisations
@@ -149,8 +153,22 @@ if(params.gwas == 'none'){
 //   Collect combinations of eQTL blood genes for which we should do colocalisations
 
 workflow {
+    empirical_grouped_ch = empirical_ch
+`        .map { file ->
+               def key = file.name.toString().tokenize('.').get(1)
+               return tuple(key, file) }
+                        groupTuple()`
+
+    permuted_grouped_ch = permuted_ch
+        .map { file ->
+               def key = file.name.toString().tokenize('.').get(1)
+               return tuple(key, file) }
+                        groupTuple()
+
+    results_grouped_ch = empirical_grouped_ch.join(permuted_grouped_ch)
+
     CIS_TRANS_COLOCALIZATION(
-        empirical_ch, permuted_ch,
+        results_grouped_ch
         gene_correlations_ch, inclusion_step_output_ch,
         posterior_threshold, cs_threshold, output_cs_pip)
 
@@ -161,7 +179,6 @@ workflow {
         CIS_TRANS_COLOCALIZATION.out.pips.flatten()
             .collectFile(name: 'GwasColocSnpPipResults.txt', keepHeader: true, sort: true, storeDir: "${params.OutputDir}")
     }
-
 }
 
 workflow.onComplete {
