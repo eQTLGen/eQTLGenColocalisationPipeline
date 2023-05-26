@@ -63,6 +63,7 @@ params.inclusion_step_output = 'NO_FILE'
 output_cs_pips = (params.output_cs_pip == "TRUE")
 
 enable_pqtl = true
+enable_gwas = false
 
 //Show parameter values
 log.info """=======================================================
