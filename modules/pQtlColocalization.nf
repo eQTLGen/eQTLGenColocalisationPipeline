@@ -70,6 +70,7 @@ process ComparePqtlAndEqtl {
         tuple val(id), path(pqtl), path(eqtl)
 
     output:
+        path "output"
 
     script:
         """
