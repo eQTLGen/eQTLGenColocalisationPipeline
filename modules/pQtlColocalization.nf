@@ -55,7 +55,7 @@ process AdjustPQtlFile {
 
         for f in "${files[@]}"; do
             i=$(( i + 1 ))
-            Rscript --vanilla $baseDir/bin/AdjustGwasFile.R !{gwas} \
+            Rscript --vanilla $baseDir/bin/AdjustGwasFile.R !{pqtl} \
             !{variant_id} !{chr} !{pos} !{effect_allele} !{other_allele} !{effect} !{standard_error} !{p_value} !{allele_frequency} !{liftover} \
             !{id}_${i}_processed.txt
 
