@@ -118,6 +118,7 @@ pqtl_ch = Channel.fromPath(params.pqtl_meta_table).splitCsv(header: true, sep: '
         def key = "${row.Assay}_${row.UniProt}_${row.OlinkID}"
         return tuple(key, row.ensembl_id)
         }
+    .view { it -> it[1] }
     .filter { it -> it[1] in genes_ch }
     .view()
     .join(pqtl_files_ch)
