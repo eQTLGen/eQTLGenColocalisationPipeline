@@ -7,7 +7,7 @@ nextflow.enable.dsl = 2
 
 // import modules
 include { SampleOverlapMatrix; RunCisTransHyprColoc; RunHyprColoc; CIS_TRANS_COLOCALIZATION; GWAS_COLOCALIZATION } from './modules/HyprColocColocalization.nf'
-
+include { PQTL_COMPARISON; ComparePqtlAndEqtl; AdjustPQtlFile; ExtractGenesForPQtlAnalysis }
 
 def helpmessage() {
 
@@ -168,8 +168,8 @@ workflow {
 
     if (enable_pqtl) {
 
-        PQTL_COLOCALIZATION(
-            results_grouped_ch, posterior_threshold, cs_threshold, output_cs_pips)
+        PQTL_COMPARISON(
+            pqtl_ch, posterior_threshold, cs_threshold, output_cs_pips)
 
         PQTL_COLOCALIZATION.out.cs.flatten()
             .collectFile(name: 'pQtlColocResults.txt', keepHeader: true, sort: true, storeDir: "${params.OutputDir}")
