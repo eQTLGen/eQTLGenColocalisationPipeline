@@ -3,6 +3,7 @@
 args <- commandArgs(trailingOnly=TRUE)
 
 message(args[1])
+out_file <- "adjusted_gwas.txt"
 
 id <- args[2]
 chr <- args[3]
@@ -14,6 +15,9 @@ standard_error <- args[8]
 p_value <- args[9]
 allele_frequency <- args[10]
 liftover <- args[11]
+if (length(args) == 12) {
+    out_file <- args[12]
+}
 
 library(data.table)
 library(rtracklayer)
@@ -119,4 +123,4 @@ if (liftover == "Hg19ToHg38"){
 }
 
 
-fwrite(gwas_reformat, "adjusted_gwas.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+fwrite(gwas_reformat, out_file, sep = "\t", quote = FALSE, row.names = FALSE)

@@ -96,25 +96,23 @@ log.info "======================================================="
 // Define argument channels
 // Get empirical channel
 empirical_ch = Channel.fromPath(params.empirical)
+    .map { file ->
+           def key = file.name.toString().tokenize('.').get(1)
+           return tuple(key, file) }
+    .groupTuple()
 
-// pQTL arguments
-pqtl_files_ch = Channel.fromPath(params.pqtl_files).
-    map { file ->
-          def fileSplit = file.name.toString().split('_')
-          def assay = fileSplit[0]
-          def uniprot = fileSplit[1]
-          def olinkId = fileSplit[2]
+// Get permuted channel
+permuted_ch = Channel.fromPath(params.permuted)
+    .map { file ->
+           def key = file.name.toString().tokenize('.').get(1)
+           return tuple(key, file) }
+    .groupTuple()
 
-          def key = "${assay}_${uniprot}_${olinkId}"
+// Get gene correlations channel
+gene_correlations_ch = Channel.fromPath(params.gene_correlations).collect()
 
-          return tuple(key, file) }
-
-pqtl_ch = Channel.fromPath(params.pqtl_meta_table).splitCsv(header: true)
-    .map { row ->
-        def key = "${row.Assay}_${row.UniProt}_${row.OlinkID}"
-        tuple(key, row.ensembl_id)
-        }
-    .join(pqtl_files_ch)
+// Get dir with sample sizes per cohort and per gene
+inclusion_step_output_ch = file(params.inclusion_step_output)
 
 // Define parameter channels
 window = Channel.value(params.window)
@@ -147,37 +145,30 @@ cs_threshold = Channel.value(params.cs_threshold)
 //   .set { InpGwas }
 // }
 
+// Identify the eQTL blood genes for which we should do colocalisations
+// Prepare the eQTL blood genes for which we should do colocalisations
+
+// Identify external phenotypes for which we should do colocalisations
+// Prepare the external phenotypes for which we should do colocalisations
+
+// If there are external phenotypes for which we should do colocalisations:
+//   Collect combinations of eQTL blood genes for which we should do colocalisations
+
 workflow {
     results_grouped_ch = empirical_ch.join(permuted_ch)
 
-    if (enable_gwas) {
+    CIS_TRANS_COLOCALIZATION(
+        results_grouped_ch,
+        gene_correlations_ch, inclusion_step_output_ch,
+        posterior_threshold, cs_threshold, output_cs_pips)
 
-        GWAS_COLOCALIZATION(
-            results_grouped_ch, posterior_threshold, cs_threshold, output_cs_pips)
+    CIS_TRANS_COLOCALIZATION.out.cs.flatten()
+        .collectFile(name: 'CisTransColocResults.txt', keepHeader: true, sort: true, storeDir: "${params.OutputDir}")
 
-        GWAS_COLOCALIZATION.out.cs.flatten()
-            .collectFile(name: 'GwasColocResults.txt', keepHeader: true, sort: true, storeDir: "${params.OutputDir}")
-
-        if (output_cs_pips == true) {
-            GWAS_COLOCALIZATION.out.pips.flatten()
-                .collectFile(name: 'GwasColocSnpPipResults.txt', keepHeader: true, sort: true, storeDir: "${params.OutputDir}")
-        }
+    if (output_cs_pips == true) {
+        CIS_TRANS_COLOCALIZATION.out.pips.flatten()
+            .collectFile(name: 'CisTransColocSnpPipResults.txt', keepHeader: true, sort: true, storeDir: "${params.OutputDir}")
     }
-
-    if (enable_pqtl) {
-
-        PQTL_COLOCALIZATION(
-            results_grouped_ch, posterior_threshold, cs_threshold, output_cs_pips)
-
-        PQTL_COLOCALIZATION.out.cs.flatten()
-            .collectFile(name: 'pQtlColocResults.txt', keepHeader: true, sort: true, storeDir: "${params.OutputDir}")
-
-        if (output_cs_pips == true) {
-            PQTL_COLOCALIZATION.out.pips.flatten()
-                .collectFile(name: 'pQtlColocSnpPipResults.txt', keepHeader: true, sort: true, storeDir: "${params.OutputDir}")
-        }
-    }
-
 
 }
 
