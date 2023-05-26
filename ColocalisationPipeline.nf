@@ -119,6 +119,7 @@ pqtl_ch = Channel.fromPath(params.pqtl_meta_table).splitCsv(header: true, sep: '
         return tuple(key, row.ensembl_id)
         }
     .filter { it -> it[1] in genes_ch }
+    .view()
     .join(pqtl_files_ch)
 
 // Define parameter channels
