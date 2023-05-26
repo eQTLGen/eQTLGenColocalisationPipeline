@@ -5,7 +5,7 @@ process ExtractGenesForPQtlAnalysis {
     scratch true
 
     input:
-        tuple val(id), path(pqtl), val(ensembl)
+        tuple val(id), val(ensembl), path(pqtl)
         path input
 
     output:
@@ -30,7 +30,7 @@ process ExtractGenesForPQtlAnalysis {
 process AdjustPQtlFile {
 
     input:
-        tuple val(id), path(pqtl), val(ensembl)
+        tuple val(id), val(ensembl), path(pqtl)
 
     output:
         tuple val(id), path("concatenated.processed.txt")
