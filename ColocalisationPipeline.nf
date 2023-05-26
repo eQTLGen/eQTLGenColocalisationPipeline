@@ -7,7 +7,7 @@ nextflow.enable.dsl = 2
 
 // import modules
 include { SampleOverlapMatrix; RunCisTransHyprColoc; RunHyprColoc; CIS_TRANS_COLOCALIZATION; GWAS_COLOCALIZATION } from './modules/HyprColocColocalization.nf'
-include { PQTL_COMPARISON; ComparePqtlAndEqtl; AdjustPQtlFile; ExtractGenesForPQtlAnalysis }
+include { PQTL_COMPARISON; ComparePqtlAndEqtl; AdjustPQtlFile; ExtractGenesForPQtlAnalysis } from './modules/pQtlColocalization.nf'
 
 def helpmessage() {
 
