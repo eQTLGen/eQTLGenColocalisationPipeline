@@ -90,9 +90,8 @@ workflow PQTL_COMPARISON {
 
         joined_preprocessed_ch = AdjustPQtlFile(pqtl_ch).join(extracted_ch)
 
-        ComparePqtlAndEqtl(joined_preprocessed_ch)
+        comparison_output_ch = ComparePqtlAndEqtl(joined_preprocessed_ch)
 
     emit:
-        cs = hypr_coloc_results.cs
-        pips = hypr_coloc_results.pips
+        comparison_output_ch
 }
