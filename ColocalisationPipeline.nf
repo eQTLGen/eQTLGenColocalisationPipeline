@@ -113,11 +113,10 @@ pqtl_files_ch = Channel.fromPath(params.pqtl_files).
           return tuple(key, file) }
     .view()
 
-pqtl_ch = Channel.fromPath(params.pqtl_meta_table).splitCsv(header: true)
-    .view()
+pqtl_ch = Channel.fromPath(params.pqtl_meta_table).splitCsv(header: true, sep: '\t')
     .map { row ->
         def key = "${row.Assay}_${row.UniProt}_${row.OlinkID}"
-        tuple(key, row.ensembl_id)
+        return tuple(key, row.ensembl_id)
         }
     .join(pqtl_files_ch)
     .view()
