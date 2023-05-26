@@ -60,8 +60,9 @@ process AdjustPQtlFile {
             !{id}_${i}_processed.txt
 
         done
+
         '''
-        file("*.processed.txt").collectFile(name:"concatenated.processed.txt", skip:1, keepHeader:true)
+        Channel.fromPath("*.processed.txt").collectFile(name:"concatenated.processed.txt", skip:1, keepHeader:true)
 
 }
 
