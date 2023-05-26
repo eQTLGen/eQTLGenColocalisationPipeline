@@ -47,6 +47,7 @@ process AdjustPQtlFile {
         allele_frequency = 6
         liftover = ""
         '''
+        mkdir untar
         tar -C untar -xvf !{pqtl}
 
         files=(untar/*/*.gz)
@@ -55,7 +56,7 @@ process AdjustPQtlFile {
 
         for f in "${files[@]}"; do
             i=$(( i + 1 ))
-            Rscript --vanilla $baseDir/bin/AdjustGwasFile.R ${f} \
+            AdjustGwasFile.R ${f} \
             !{variant_id} !{chr} !{pos} !{effect_allele} !{other_allele} \
             !{effect} !{standard_error} !{p_value} !{allele_frequency} !{liftover} \
             !{id}_${i}_processed.txt
