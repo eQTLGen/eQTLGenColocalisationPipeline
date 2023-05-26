@@ -82,9 +82,6 @@ workflow PQTL_COMPARISON {
     take:
         pqtl_ch
         eqtl_ch
-        posterior_threshold
-        cs_threshold
-        output_cs_pip
 
     main:
         extracted_ch = ExtractGenesForPQtlAnalysis(

@@ -169,15 +169,8 @@ workflow {
     if (enable_pqtl) {
 
         PQTL_COMPARISON(
-            pqtl_ch, posterior_threshold, cs_threshold, output_cs_pips)
+            pqtl_ch, empirical_ch)
 
-        PQTL_COLOCALIZATION.out.cs.flatten()
-            .collectFile(name: 'pQtlColocResults.txt', keepHeader: true, sort: true, storeDir: "${params.OutputDir}")
-
-        if (output_cs_pips == true) {
-            PQTL_COLOCALIZATION.out.pips.flatten()
-                .collectFile(name: 'pQtlColocSnpPipResults.txt', keepHeader: true, sort: true, storeDir: "${params.OutputDir}")
-        }
     }
 
 
