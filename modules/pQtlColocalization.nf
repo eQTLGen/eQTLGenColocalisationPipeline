@@ -61,9 +61,10 @@ process AdjustPQtlFile {
 
         done
 
-        '''
-        Channel.fromPath("*.processed.txt").collectFile(name:"concatenated.processed.txt", skip:1, keepHeader:true)
+        head -n 1 "!{id}_0_processed.txt" > "concatenated.processed.txt"
+        tail -n +2 "!{id}_*_processed.txt" >> "concatenated.processed.txt"
 
+        '''
 }
 
 process ComparePqtlAndEqtl {
