@@ -4,6 +4,7 @@ args <- commandArgs(trailingOnly=TRUE)
 
 message(args[1])
 out_file <- "adjusted_gwas.txt"
+print(args)
 
 id <- args[2]
 chr <- args[3]
