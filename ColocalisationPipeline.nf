@@ -62,6 +62,8 @@ params.inclusion_step_output = 'NO_FILE'
 
 output_cs_pips = (params.output_cs_pip == "TRUE")
 
+enable_pqtl = true
+
 //Show parameter values
 log.info """=======================================================
 Colocalisation pipeline v${workflow.manifest.version}"
@@ -148,7 +150,6 @@ cs_threshold = Channel.value(params.cs_threshold)
 // }
 
 workflow {
-    results_grouped_ch = empirical_ch.join(permuted_ch)
 
     if (enable_gwas) {
 
