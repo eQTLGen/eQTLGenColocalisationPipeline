@@ -99,6 +99,7 @@ log.info "======================================================="
 // Define argument channels
 // Get empirical channel
 empirical_ch = Channel.fromPath(params.empirical)
+genes_ch = Channel.fromPath(params.genes).splitCsv(header: ['gene']).map { row -> "${row.gene}" }
 
 // pQTL arguments
 pqtl_files_ch = Channel.fromPath(params.pqtl_files).
@@ -117,6 +118,7 @@ pqtl_ch = Channel.fromPath(params.pqtl_meta_table).splitCsv(header: true, sep: '
         def key = "${row.Assay}_${row.UniProt}_${row.OlinkID}"
         return tuple(key, row.ensembl_id)
         }
+    .join(genes_ch, by: [1,0])
     .join(pqtl_files_ch)
 
 // Define parameter channels

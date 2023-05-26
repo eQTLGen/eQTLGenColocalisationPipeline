@@ -45,7 +45,7 @@ process AdjustPQtlFile {
         standard_error = 11
         p_value = 13
         allele_frequency = 6
-        liftover = ""
+        liftover = "-"
         '''
         mkdir untar
         tar -C untar -xvf !{pqtl}
