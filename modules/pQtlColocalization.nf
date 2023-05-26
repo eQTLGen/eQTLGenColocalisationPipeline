@@ -33,7 +33,7 @@ process AdjustPQtlFile {
         tuple val(id), path(pqtl), val(ensembl)
 
     output:
-        tuple val(id), path("*.processed.txt").collectFile(skip:1, keepHeader:true)
+        tuple val(id), path("concatenated.processed.txt")
 
     shell:
         def variant_id = 3
@@ -61,6 +61,7 @@ process AdjustPQtlFile {
 
         done
         '''
+        file("*.processed.txt").collectFile(name:"concatenated.processed.txt", skip:1, keepHeader:true)
 
 }
 
