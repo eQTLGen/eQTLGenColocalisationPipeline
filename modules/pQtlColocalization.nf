@@ -43,7 +43,7 @@ process AdjustPQtlFile {
         other_allele = "ALLELE0"
         effect = "BETA"
         standard_error = "SE"
-        mlog10_p_value = LOG10P
+        mlog10_p_value = "LOG10P"
         allele_frequency = "A1FREQ"
         liftover = "-"
         '''
@@ -58,7 +58,7 @@ process AdjustPQtlFile {
             i=$(( i + 1 ))
             AdjustGwasFile.R -i ${f} \
             -id !{variant_id} -chr !{chr} -bp !{pos} -ea !{effect_allele} -oa !{other_allele} \
-            -b !{effect} -se !{standard_error} -mlp !{p_value} -af !{allele_frequency} -l !{liftover} \
+            -b !{effect} -se !{standard_error} -mlp !{mlog10_p_value} -af !{allele_frequency} -l !{liftover} \
             -out !{id}_${i}_processed.txt
 
         done
