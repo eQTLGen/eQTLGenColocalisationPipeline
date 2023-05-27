@@ -5,31 +5,31 @@ args <- commandArgs(trailingOnly=TRUE)
 library(data.table)
 library(rtracklayer)
 library(stringr)
-library(argparse)
+library(optparse)
 
-# Create an argument parser
-parser <- ArgumentParser(description = "Script description")
+# Create an option parser
+parser <- OptionParser(usage = "Usage: %prog [options]", description = "Script description")
 
-# Add the arguments
-parser <- parser$add_argument("-i", "--input", help = "ID argument")
-parser <- parser$add_argument("-id", "--id", help = "ID argument")
-parser <- parser$add_argument("-chr", "--chr", help = "Chr argument")
-parser <- parser$add_argument("-bp", "--pos", help = "Pos argument")
-parser <- parser$add_argument("-ea", "--effect_allele", help = "Effect allele argument")
-parser <- parser$add_argument("-oa", "--other_allele", help = "Other allele argument")
-parser <- parser$add_argument("-b", "--effect", help = "Effect argument")
-parser <- parser$add_argument("-se", "--standard_error", help = "Standard error argument")
-parser <- parser$add_argument("-p", "--p_value", help = "P-value argument")
-parser <- parser$add_argument("-mlp", "--mlog10_p_value", help = "P-value argument")
-parser <- parser$add_argument("-af", "--allele_frequency", help = "Allele frequency argument")
-parser <- parser$add_argument("-l", "--liftover", help = "Liftover argument")
-parser <- parser$add_argument("-out", "--out_file", default = "adjusted_gwas.txt", help = "Output file argument")
+# Add the options
+parser <- add_option(parser, "-i", "--input", dest = "input", help = "ID argument")
+parser <- add_option(parser, "--id", dest = "id", help = "ID argument")
+parser <- add_option(parser, "--chr", dest = "chr", help = "Chr argument")
+parser <- add_option(parser, "--bp", dest = "pos", help = "Pos argument")
+parser <- add_option(parser, "--ea", dest = "effect_allele", help = "Effect allele argument")
+parser <- add_option(parser, "--oa", dest = "other_allele", help = "Other allele argument")
+parser <- add_option(parser, "-b", "--effect", dest = "effect", help = "Effect argument")
+parser <- add_option(parser, "--se", dest = "standard_error", help = "Standard error argument")
+parser <- add_option(parser, "-p", "--p_value", dest = "p_value", help = "P-value argument")
+parser <- add_option(parser, "--mlp", dest = "mlog10_p_value", help = "P-value argument")
+parser <- add_option(parser, "--af", dest = "allele_frequency", help = "Allele frequency argument")
+parser <- add_option(parser, "-l", "--liftover", dest = "liftover", help = "Liftover argument")
+parser <- add_option(parser, "-out", "--out_file", dest = "out_file", default = "adjusted_gwas.txt", help = "Output file argument")
 
 # Parse the command-line arguments
 args <- parse_args(parser)
 
 # Access the parsed arguments
-message(args$args)
+message(args$input)
 out_file <- args$out_file
 print(args)
 input <- args$input
