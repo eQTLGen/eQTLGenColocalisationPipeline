@@ -36,15 +36,15 @@ process AdjustPQtlFile {
         tuple val(id), path("concatenated.processed.txt")
 
     shell:
-        variant_id = 3
-        chr = 1
-        pos = 2
-        effect_allele = 5
-        other_allele = 4
-        effect = 10
-        standard_error = 11
-        p_value = 13
-        allele_frequency = 6
+        variant_id = "ID"
+        chr = "CHROM"
+        pos = "GENPOS"
+        effect_allele = "ALLELE1"
+        other_allele = "ALLELE0"
+        effect = "BETA"
+        standard_error = "SE"
+        mlog10_p_value = LOG10P
+        allele_frequency = "A1FREQ"
         liftover = "-"
         '''
         mkdir untar
@@ -56,10 +56,10 @@ process AdjustPQtlFile {
 
         for f in "${files[@]}"; do
             i=$(( i + 1 ))
-            AdjustGwasFile.R ${f} \
-            !{variant_id} !{chr} !{pos} !{effect_allele} !{other_allele} \
-            !{effect} !{standard_error} !{p_value} !{allele_frequency} !{liftover} \
-            !{id}_${i}_processed.txt
+            AdjustGwasFile.R -i ${f} \
+            -id !{variant_id} -chr !{chr} -bp !{pos} -ea !{effect_allele} -oa !{other_allele} \
+            -b !{effect} -se !{standard_error} -mlp !{p_value} -af !{allele_frequency} -l !{liftover} \
+            -out !{id}_${i}_processed.txt
 
         done
 

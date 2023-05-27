@@ -2,30 +2,51 @@
 
 args <- commandArgs(trailingOnly=TRUE)
 
-message(args[1])
-out_file <- "adjusted_gwas.txt"
-print(args)
-
-id <- args[2]
-chr <- args[3]
-pos <- args[4]
-effect_allele <- args[5]
-other_allele <- args[6]
-effect <- args[7]
-standard_error <- args[8]
-p_value <- args[9]
-allele_frequency <- args[10]
-liftover <- args[11]
-if (length(args) == 12) {
-    out_file <- args[12]
-}
-
 library(data.table)
 library(rtracklayer)
 library(stringr)
+library(argparse)
+
+# Create an argument parser
+parser <- ArgumentParser(description = "Script description")
+
+# Add the arguments
+parser <- parser$add_argument("-i", "--input", help = "ID argument")
+parser <- parser$add_argument("-id", "--id", help = "ID argument")
+parser <- parser$add_argument("-chr", "--chr", help = "Chr argument")
+parser <- parser$add_argument("-bp", "--pos", help = "Pos argument")
+parser <- parser$add_argument("-ea", "--effect_allele", help = "Effect allele argument")
+parser <- parser$add_argument("-oa", "--other_allele", help = "Other allele argument")
+parser <- parser$add_argument("-b", "--effect", help = "Effect argument")
+parser <- parser$add_argument("-se", "--standard_error", help = "Standard error argument")
+parser <- parser$add_argument("-p", "--p_value", help = "P-value argument")
+parser <- parser$add_argument("-mlp", "--mlog10_p_value", help = "P-value argument")
+parser <- parser$add_argument("-af", "--allele_frequency", help = "Allele frequency argument")
+parser <- parser$add_argument("-l", "--liftover", help = "Liftover argument")
+parser <- parser$add_argument("-out", "--out_file", default = "adjusted_gwas.txt", help = "Output file argument")
+
+# Parse the command-line arguments
+args <- parse_args(parser)
+
+# Access the parsed arguments
+message(args$args)
+out_file <- args$out_file
+print(args)
+input <- args$input
+id <- args$id
+chr <- args$chr
+pos <- args$pos
+effect_allele <- args$effect_allele
+other_allele <- args$other_allele
+effect <- args$effect
+standard_error <- args$standard_error
+p_value <- args$p_value
+mlog10_p_value <- args$mlog10_p_value
+allele_frequency <- args$allele_frequency
+liftover <- args$liftover
 
 # Read in GWAS sumstats file
-gwas <- fread(args[1])
+gwas <- fread(input)
 
 message("Data read in!")
 
@@ -35,6 +56,7 @@ if (length(gwas[[pos]]) < 1) { message(paste(pos, "is not present in the file!")
 if (length(gwas[[effect_allele]]) < 1) { message(paste(effect_allele, "is not present in the file!")) }
 if (length(gwas[[other_allele]]) < 1) { message(paste(other_allele, "is not present in the file!")) }
 if (length(gwas[[p_value]]) < 1) { message(paste(p_value, "is not present in the file!")) }
+if (length(gwas[[mlog10_p_value]]) < 1) { message(paste(mlog10_p_value, "is not present in the file!")) }
 if (length(gwas[[effect]]) < 1) { message(paste(effect, "is not present in the file!")) }
 if (length(gwas[[standard_error]]) < 1) { message(paste(standard_error, "is not present in the file!")) }
 if (length(gwas[[allele_frequency]]) < 1) { message(paste(allele_frequency, "is not present in the file!")) }
@@ -47,7 +69,7 @@ CHR = gwas[[chr]],
 POS = gwas[[pos]],
 EA = gwas[[effect_allele]],
 NEA = gwas[[other_allele]],
-P = gwas[[p_value]],
+P = ifelse(length(gwas[[p_value]]) > 0, gwas[[p_value]], 10^-gwas[[mlog10_p_value]]),
 BETA = gwas[[effect]],
 SE = gwas[[standard_error]],
 EAF = gwas[[allele_frequency]]
